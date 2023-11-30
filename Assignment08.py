@@ -131,23 +131,46 @@ class FileProcessor:
 
         :param file_name: string data with name of file to read from
         :param employee_data: list of dictionary rows to be filled with file data
-        :param employee_type: an reference to the Employee class
+        :param employee_type: a reference to the Employee class
         :return: list
         """
         try:
             with open(file_name, "r") as file:
-                list_of_dictionary_data = json.load(file)  # the load function returns a list of dictionary rows.
+                file_content = file.read()
+                if not file_content.strip():
+                    print(f"File '{file_name}' is empty. Creating default content...")
+                    employee_object = employee_type()
+                    employee_object.first_name = "DefaultFirstName"
+                    employee_object.last_name = "DefaultLastName"
+                    employee_object.review_date = "1900-01-01"
+                    employee_object.review_rating = 3
+                    with open(file_name, "w") as new_file:
+                        json.dump([employee_object.__dict__], new_file)
+                    print("Default content created successfully.")
+                    return employee_data
+
+                list_of_dictionary_data = json.loads(
+                    file_content)  # the loads function returns a list of dictionary rows.
                 for employee in list_of_dictionary_data:
                     employee_object = employee_type()
-                    employee_object.first_name=employee["FirstName"]
-                    employee_object.last_name=employee["LastName"]
-                    employee_object.review_date=employee["ReviewDate"]
-                    employee_object.review_rating=employee["ReviewRating"]
+                    employee_object.first_name = employee["FirstName"]
+                    employee_object.last_name = employee["LastName"]
+                    employee_object.review_date = employee["ReviewDate"]
+                    employee_object.review_rating = employee["ReviewRating"]
                     employee_data.append(employee_object)
         except FileNotFoundError:
-            raise FileNotFoundError("Text file must exist before running this script!")
-        except Exception:
-            raise Exception("There was a non-specific error!")
+            print(f"File '{file_name}' not found, creating it...")
+            employee_object = employee_type()
+            employee_object.first_name = "DefaultFirstName"
+            employee_object.last_name = "DefaultLastName"
+            employee_object.review_date = "1900-01-01"
+            employee_object.review_rating = 3
+            with open(file_name, "w") as new_file:
+                json.dump([employee_object.__dict__], new_file)
+            print("File created successfully.")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+            raise
         return employee_data
 
     @staticmethod
