@@ -1,5 +1,6 @@
 import json
 from datetime import date, datetime
+from typing import TextIO, List
 
 FILE_NAME: str = "EmployeeRatings.json"
 MENU: str = '''
@@ -14,6 +15,7 @@ MENU: str = '''
 employees: list = []  # a table of employee data
 menu_choice = ''
 
+
 # Define Classes
 class Person:
     """
@@ -25,6 +27,7 @@ class Person:
         -RRoot, 1.1.2030: Created class
         -Sabrina Fechtner, 11.30.2023 added exception handling
     """
+
     def __init__(self, first_name: str, last_name: str) -> None:
         self._first_name = first_name
         self._last_name = last_name
@@ -62,12 +65,13 @@ class Employee(Person):
     Properties:
         -first_name(str):The employee's first name
         -last_name(str): The employee's last name
-        -review_date(str): the date of the employee review 
+        -review_date(str): the date of the employee review
         -review_rating(int): the review employee rating (1-5)
     ChangeLog:
         -RRoot, 1.1.2030: Created the class
         -Sabrina Fechtner, 11.30.2023: Added Exceptions
     """
+
     def __init__(self, employee_first_name: str, employee_last_name: str, review_date: str, review_rating: int) -> None:
         super().__init__(first_name=employee_first_name, last_name=employee_last_name)
         self.review_date = review_date
@@ -103,6 +107,7 @@ class Employee(Person):
     def __str__(self) -> str:
         return f"{super().__str__()} has been reviewed on {self.review_date} with a rating of {self.review_rating}"
 
+
 # File Processing Functions
 class FileProcessor:
     """
@@ -114,47 +119,60 @@ class FileProcessor:
     """
 
     @staticmethod
-    def read_data_from_file(file_name: str) -> list[Employee]:
+    def read_data_from_file(file_name: str) -> List[Employee]:
         """ This function reads previous JSON file with employee data
 
         ChangeLog: (Who, When, What)
         RRoot,1.3.2030,Created function
         Sabrina Fechtner, 11.16.2023, Incorporated Function
 
-        :param: file_name: string data with name of file to read from
-        :param: employee_data: list of dictionary rows to be filled with file data
-        :param: employee_type: a referece to Employee class
+        :param file_name: string data with the name of the file to read from
         :return: employee data as a list
         """
         file: TextIO = None
         json_data = []
         employees: list[Employee] = []
+        employee_type: object
+        employee_data: list
         try:
-            file = open(file_name, "r")
-            json_data = json.load(file)
-            print("Data successfully loaded from the file.")
+            with open(file_name, "r") as file:
+                employee_data = json.load(file)
+                print("Data successfully loaded from the file.")
+            for row in employee_data:
+                employee = Employee(row["first_name"],
+                                    row["last_name"],
+                                    row["review_date"],
+                                    row["review_rating"]
+                                    )
+                employees.append(employee)
+
         except FileNotFoundError:
             print("File not found, creating it...")
+            employee_object = employee_type()
+            employee_object.first_name = "DefaultFirstName"
+            employee_object.last_name = "DefaultLastName"
+            employee_object.review_date = "1900-01-01"
+            employee_object.review_rating = 3
             with open(file_name, "w") as file:
-                json.dump(json_data, file)
-                print("File created successfully.")
+                json.dump(employee_object, file)
+            print("File created successfully.")
+
         except json.JSONDecodeError as e:
             print(f"Invalid JSON file: {e}. Resetting it...")
+            # Resetting employee_data with an empty list
+            employee_data = []
             with open(file_name, "w") as file:
-                json.dump(json_data, file)
-                print("File reset successfully.")
+                json.dump(employee_data, file)
+            print("File reset successfully.")
+
         except Exception as e:
             print(f"An unexpected error occurred while loading data: {e}")
-
-        for row in json_data:
-            student = Employee(row["student_first_name"], row["student_last_name"], row["course_name"])
-            employees.append(student)
 
         return employees
 
     @staticmethod
-    def write_data_to_file(roster: list[Student], file_name: str) -> list[Student]:
-        """ This function writes student and course data to JSON file
+    def write_data_to_file(file_name: str, employee_data: list) -> list[Employee]:
+        """ This function writes employee and review data to JSON file
 
         ChangeLog: (Who, When, What)
         RRoot,1.3.2030,Created function
@@ -166,11 +184,12 @@ class FileProcessor:
         file: TextIO = None
         try:
             json_data: list[dict[str, str, str]] = []
-            for student in roster:
+            for employee in employee_data:
                 json_data.append({
-                    "student_first_name": student.first_name,
-                    "student_last_name": student.last_name,
-                    "course_name": student.student_course_name
+                    "employee_first_name": employee.first_name,
+                    "employee_last_name": employee.last_name,
+                    "review_date": employee.review_date,
+                    "review_rating": employee.review_rating
                 }
                 )
             with open(file_name, "w") as file:
@@ -180,7 +199,7 @@ class FileProcessor:
             IO.output_error_messages("Please check that the data is a valid JSON format", e)
         except Exception as e:
             IO.output_error_messages("There was a non-specific error!", e)
-        return roster
+        return employee_data
 
 
 # Present and Process the data
@@ -237,7 +256,7 @@ class IO:
         return choice
 
     @staticmethod
-    def output_student_courses(student_data: list[Student]):
+    def output_employee_data(employee_data: list[Employee]):
         """ This function shows the first name, last name, and course name from the user
 
         ChangeLog: (Who, When, What)
@@ -247,44 +266,48 @@ class IO:
         :return: None
         """
         print("\nThe current data is:")
-        for student in student_data:
-            student_first_name = student.first_name
-            student_last_name = student.last_name
-            student_course_name = student.course_name
-            print(student_first_name, student_last_name, student_course_name)
+        for employee in employee_data:
+            employee_first_name = employee.first_name
+            employee_last_name = employee.last_name
+            employee_review_date = employee.review_date
+            employee_review_rating = employee_review_rating
+            print(employee_first_name,employee_last_name, employee_review_date, employee_review_rating )
 
     @staticmethod
-    def input_student_data(student_data: List[Student]) -> List[Student]:
+    def input_student_data(employee_data: list = None) -> List[Employee]:
         """
         This function incorporates user choice from the menu
 
         ChangeLog: (Who, When, What)
         RRoot,1.3.2030,Created function
-        Sabrina Fechtner, 11.16.2023, Incorporated into A06
-        Sabrina Fechtner, 11.24.2023, pulled in A07
-        :return: None
+        Sabrina Fechtner, 12.1.2023, pulled in A08
+
+        :param: employee_data: list of dictionary rows to be filled with input data
+        :return: list
         """
         while True:
             # Create an instance of Student with valid initial values
-            student = Student("", "", "")
+            employee = Employee("", "", "", "")
 
-            student_first_name: str = input("Please enter first name: ")
-            student_last_name: str = input("Please enter last name: ")
-            student_course_name: str = input("Please enter the course name: ")
+            employee_first_name: str = input("Please enter first name: ")
+            employee_last_name: str = input("Please enter last name: ")
+            review_date: str = input("Enter Review Date (YYYY-MM-DD): ")
+            review_rating = int(input("Enter Employee Rating (1-5): "))
 
             try:
-                student.first_name = student_first_name
-                student.last_name = student_last_name
-                student.student_course_name = student_course_name
+                employee.first_name = employee_first_name
+                employee.last_name = employee_last_name
+                employee.review_date = review_date
+                employee.review_rating = review_rating
 
                 # Create a new instance with validated properties
-                student = Student(student.first_name, student.last_name, student.student_course_name)
-                student_data.append(student)
+                #employee = Employee(first_name, last_name, review_date, review_rating)
+                employee_data.append(employee)
 
                 print(
-                    f"You have registered {student.first_name} {student.last_name} for {student.student_course_name}.")
+                    f"You recorded: {employee.first_name} {employee.last_name} has been reviewed on {review_date} with a rating of {review_rating}.")
                 break  # if registration is successful
             except ValueError as e:
-                IO.output_error_messages(f"Error registering student: {e}")
+                IO.output_error_messages(f"Error recording employee data: {e}")
 
-        return student_data
+        return employee_data
