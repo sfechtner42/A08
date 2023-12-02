@@ -119,7 +119,7 @@ class FileProcessor:
     """
 
     @staticmethod
-    def read_data_from_file(file_name: str) -> List[Employee]:
+    def read_data_from_file(file_name: str, employee_object=None) -> list[Employee]:
         """ This function reads previous JSON file with employee data
 
         ChangeLog: (Who, When, What)
@@ -130,10 +130,8 @@ class FileProcessor:
         :return: employee data as a list
         """
         file: TextIO = None
-        json_data = []
+        employee_data = []
         employees: list[Employee] = []
-        employee_type: object
-        employee_data: list
         try:
             with open(file_name, "r") as file:
                 employee_data = json.load(file)
@@ -148,26 +146,29 @@ class FileProcessor:
 
         except FileNotFoundError:
             print("File not found, creating it...")
-            employee_object = employee_type()
-            employee_object.first_name = "DefaultFirstName"
-            employee_object.last_name = "DefaultLastName"
-            employee_object.review_date = "1900-01-01"
-            employee_object.review_rating = 3
+            employee_object = {"employee_first_name": "DefaultFirstName",
+                               "employee_last_name": "DefaultLastName",
+                               "review_date": "1900-01-01",
+                               "review_rating": "3"
+                               }
             with open(file_name, "w") as file:
                 json.dump(employee_object, file)
             print("File created successfully.")
 
         except json.JSONDecodeError as e:
             print(f"Invalid JSON file: {e}. Resetting it...")
-            # Resetting employee_data with an empty list
-            employee_data = []
+            # Resetting employee_data with default employee
             with open(file_name, "w") as file:
-                json.dump(employee_data, file)
+                json.dump(employee_object, file)
             print("File reset successfully.")
 
         except Exception as e:
             print(f"An unexpected error occurred while loading data: {e}")
 
+        for row in employee_data:
+            employee = Employee(row["employee_first_name"], row["employee_last_name"], row["review_date"],
+                                row["review_rating"])
+            employees.append(employee)
         return employees
 
     @staticmethod
@@ -183,7 +184,7 @@ class FileProcessor:
         """
         file: TextIO = None
         try:
-            json_data: list[dict[str, str, str]] = []
+            json_data: list[dict[str, str, str, str, int]] = []
             for employee in employee_data:
                 json_data.append({
                     "employee_first_name": employee.first_name,
@@ -256,7 +257,7 @@ class IO:
         return choice
 
     @staticmethod
-    def output_employee_data(employee_data: list[Employee]):
+    def output_employee_data(employee_data=employees):
         """ This function shows the first name, last name, and course name from the user
 
         ChangeLog: (Who, When, What)
@@ -267,26 +268,21 @@ class IO:
         """
         for employee in employee_data:
             if employee.review_rating == 5:
-                message = " {} {} is rated as 5 (Leading)"
+                message = "{} {} is rated as 5 (Leading)"
             elif employee.review_rating == 4:
-                message = " {} {} is rated as 4 (Strong)"
+                message = "{} {} is rated as 4 (Strong)"
             elif employee.review_rating == 3:
-                message = " {} {} is rated as 3 (Solid)"
+                message = "{} {} is rated as 3 (Solid)"
             elif employee.review_rating == 2:
-                message = " {} {} is rated as 2 (Building)"
+                message = "{} {} is rated as 2 (Building)"
             elif employee.review_rating == 1:
-                message = " {} {} is rated as 1 (Not Meeting Expectations"
+                message = "{} {} is rated as 1 (Not Meeting Expectations)"
 
-        print("\nThe current data is:")
-        for employee in employee_data:
-            employee_first_name = employee.first_name
-            employee_last_name = employee.last_name
-            employee_review_date = employee.review_date
-            employee_review_rating = employee_review_rating
-            print(employee_first_name,employee_last_name, employee_review_date, employee_review_rating )
+            print(message.format(employee.first_name, employee.last_name))
 
     @staticmethod
-    def input_student_data(employee_data: list = None) -> List[Employee]:
+    def input_employee_data(employee_first_name=None, employee_last_name=None, review_date=None, review_rating=None,
+                            first_name=None, last_name=None) ->  List[Employee]:
         """
         This function incorporates user choice from the menu
 
@@ -294,32 +290,63 @@ class IO:
         RRoot,1.3.2030,Created function
         Sabrina Fechtner, 12.1.2023, pulled in A08
 
-        :param: employee_data: list of dictionary rows to be filled with input data
         :return: list
         """
         while True:
             # Create an instance of Student with valid initial values
-            employee = Employee("", "", "", "")
+            student = Employee("", "", "", "")
 
-            employee_first_name: str = input("Please enter first name: ")
-            employee_last_name: str = input("Please enter last name: ")
-            review_date: str = input("Enter Review Date (YYYY-MM-DD): ")
-            review_rating = int(input("Enter Employee Rating (1-5): "))
+            student_first_name: str = input("Please enter first name: ")
+            student_last_name: str = input("Please enter last name: ")
+            student_course_name: str = input("Please enter the course name: ")
 
             try:
-                employee.first_name = employee_first_name
-                employee.last_name = employee_last_name
-                employee.review_date = review_date
-                employee.review_rating = review_rating
+                student.first_name = student_first_name
+                student.last_name = student_last_name
+                student.student_course_name = student_course_name
 
                 # Create a new instance with validated properties
-                #employee = Employee(first_name, last_name, review_date, review_rating)
-                employee_data.append(employee)
+                student = Employee(first_name, last_name, review_date,review_rating )
+                employees.append(student)
 
                 print(
-                    f"You recorded: {employee.first_name} {employee.last_name} has been reviewed on {review_date} with a rating of {review_rating}.")
+                    f"You have registered {student.first_name} {student.last_name} for {student.student_course_name}.")
                 break  # if registration is successful
             except ValueError as e:
-                IO.output_error_messages(f"Error recording employee data: {e}")
+                IO.output_error_messages(f"Error registering student: {e}")
 
-        return employee_data
+        return employees
+
+
+
+# Main Program
+employees = FileProcessor.read_data_from_file(file_name=FILE_NAME)  # Note this is the class name (ignore the warning)
+
+# Repeat the follow tasks
+while True:
+    IO.output_menu(menu=MENU)
+
+    menu_choice = IO.input_menu_choice()
+
+    if menu_choice == "1":  # Display current data
+        try:
+            IO.output_employee_data(employee_data=employees)
+        except Exception as e:
+            IO.output_error_messages(e)
+        continue
+    elif menu_choice == "2":  # Get new data (and display the change)
+        try:
+            employees = IO.input_employee_data()
+            IO.output_employee_data()
+        except Exception as e:
+            IO.output_error_messages(e)
+        continue
+    elif menu_choice == "3":  # Save data in a file
+        try:
+            FileProcessor.write_data_to_file(file_name=FILE_NAME, employee_data=employees)
+            print(f"Data was saved to the {FILE_NAME} file.")
+        except Exception as e:
+            IO.output_error_messages(e)
+        continue
+    elif menu_choice == "4":  # End the program
+        break  # out of the while loop
