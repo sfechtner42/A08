@@ -265,6 +265,18 @@ class IO:
 
         :return: None
         """
+        for employee in employee_data:
+            if employee.review_rating == 5:
+                message = " {} {} is rated as 5 (Leading)"
+            elif employee.review_rating == 4:
+                message = " {} {} is rated as 4 (Strong)"
+            elif employee.review_rating == 3:
+                message = " {} {} is rated as 3 (Solid)"
+            elif employee.review_rating == 2:
+                message = " {} {} is rated as 2 (Building)"
+            elif employee.review_rating == 1:
+                message = " {} {} is rated as 1 (Not Meeting Expectations"
+
         print("\nThe current data is:")
         for employee in employee_data:
             employee_first_name = employee.first_name
