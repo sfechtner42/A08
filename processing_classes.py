@@ -1,3 +1,10 @@
+# ------------------------------------------------------------------------------------------------- #
+# Title: Assignment08-processing_classes
+# # Description: A collection of classes for managing the application
+# ChangeLog: (Who, When, What)
+# RRoot,1.5.2030,Created Script
+# Sabrina Fechtner, 12.3.2023, modified to only show, class (person, employee) and read/write to file
+# ------------------------------------------------------------------------------------------------- #
 
 import json
 from typing import TextIO, List

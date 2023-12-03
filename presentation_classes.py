@@ -1,6 +1,14 @@
+# ------------------------------------------------------------------------------------------------- #
+# Title: Assignment08-presentation_classes
+# # Description: A collection of classes for managing the application
+# ChangeLog: (Who, When, What)
+# RRoot,1.5.2030,Created Script
+# Sabrina Fechtner, 12.3.2023, modified to only show IO class
+# ------------------------------------------------------------------------------------------------- #
 
 from typing import TextIO, List
 from processing_classes import Employee
+
 class IO:
     """
     A collection of presentation layer functions that manage user input and output
