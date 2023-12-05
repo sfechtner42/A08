@@ -23,8 +23,8 @@ class Person:
         -Sabrina Fechtner, 12.1.2023 added exception handling
     """
     def __init__(self, first_name: str, last_name: str) -> None:
-        self._first_name = first_name
-        self._last_name = last_name
+        self.first_name = first_name
+        self.last_name = last_name
 
     @property
     def first_name(self) -> str:
@@ -32,10 +32,9 @@ class Person:
 
     @first_name.setter
     def first_name(self, value):
-        if value.isalpha():
-            self._first_name = value
-        else:
+        if not str(value).isalpha():
             raise ValueError("The first name cannot be alphanumeric. Please re-enter the first name.")
+        self._first_name = str(value)
 
     @property
     def last_name(self) -> str:
@@ -43,14 +42,12 @@ class Person:
 
     @last_name.setter
     def last_name(self, value):
-        if value.isalpha():
-            self._last_name = value
-        else:
+        if not str(value).isalpha():
             raise ValueError("The last name cannot be alphanumeric. Please re-enter the last name.")
+        self._last_name = str(value)
 
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"
-
 class Employee(Person):
     """
     A class representing employee data.
@@ -81,8 +78,15 @@ class Employee(Person):
             raise ValueError("Please enter review date as YYYY-MM-DD")
 
     @property
-    def review_rating(self) -> int:
-        return self._review_rating
+    def review_rating(self, value: int):
+        try:
+            value = int(value)
+            if value in {1, 2, 3, 4, 5}:
+                self._review_rating = value
+            else:
+                raise ValueError("Rating must be between 1 and 5.")
+        except ValueError as e:
+            print(f"Error setting rating: {e}")
 
     @review_rating.setter
     def review_rating(self, value: int):

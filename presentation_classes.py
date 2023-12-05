@@ -79,12 +79,9 @@ class IO:
                     message = "{} {} is rated as 2 (Building)"
                 elif employee.review_rating == 1:
                     message = "{} {} is rated as 1 (Not Meeting Expectations)"
-
                 print(message.format(employee.first_name, employee.last_name))
             else:
                 raise ValueError("Rating must be between 1 and 5.")
-
-
     @staticmethod
     def input_employee_data(employee_data: List[Employee]) -> List[Employee]:
         """
@@ -96,38 +93,24 @@ class IO:
         :return: None
         """
         while True:
-            # Create an instance of Employee with valid initial values
-            employee = Employee("", "", "1900-01-01", 3)
-
-            employee_first_name: str = input("Please enter first name: ")
-            employee_last_name: str = input("Please enter last name: ")
-            review_date: str = input("Enter Review Date (YYYY-MM-DD): ")
-            review_rating: int = input("Enter Employee Rating (1-5): ")
-
             try:
-                employee.first_name = employee_first_name
-                employee.last_name = employee_last_name
-                employee.review_date = review_date
-                employee.review_rating = review_rating
+                # Get user input
+                employee_first_name: str = input("Please enter first name: ")
+                employee_last_name: str = input("Please enter last name: ")
+                review_date: str = input("Enter Review Date (YYYY-MM-DD): ")
+                review_rating: int = input("Enter Employee Rating (1-5): ")
 
-                # Create a new instance with validated properties
-                employee = Employee(employee.first_name, employee.last_name, employee.review_date, employee.review_rating)
+                # Create an instance of Employee with validated properties
+                employee = Employee(employee_first_name, employee_last_name, review_date, review_rating)
                 employee_data.append(employee)
 
-                print(f"You recorded: {employee.first_name} {employee.last_name} has been reviewed on {review_date} with a rating of {review_rating}.")
-
-                # Prompt user to write to JSON file
-                #save_to_file = input("Do you want to save this data to the file? (yes/no): ").lower()
-                #if save_to_file == "yes":
-                    # Call the write_data_to_file function to save the data to the JSON file
-                    #FileProcessor.write_data_to_file(file_name=FILE_NAME, employee_data=employee_data)
-                    #print(f"Data was saved to the {FILE_NAME} file.")
+                print(
+                    f"You recorded: {employee.first_name} {employee.last_name} has been reviewed on {review_date} with a rating of {review_rating}.")
 
                 break  # If registration is successful
             except ValueError as e:
                 IO.output_error_messages(f"Error recording employee data: {e}")
 
         return employee_data
-
 if __name__ == "__main__":
     print("This class is not meant to be run!")
