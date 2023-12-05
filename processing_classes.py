@@ -11,7 +11,7 @@ from typing import TextIO, List
 from datetime import datetime
 
 
-# Define Classes
+# Define Data Classes
 class Person:
     """
     A class representing person data.
@@ -37,8 +37,8 @@ class Person:
                 self._first_name = value
                 break
             else:
-                value = input("Invalid input. The first name cannot be alphanumeric. Please re-enter the first name: ")
-
+                #value = input("Invalid input. The first name cannot be alphanumeric. Please re-enter the first name: ")
+                raise ValueError("Invalid entry First Name")
     @property
     def last_name(self) -> str:
         return self._last_name.capitalize()
@@ -50,20 +50,24 @@ class Person:
                 self._last_name = value
                 break
             else:
-                value = input("Invalid input. The last name cannot be alphanumeric. Please re-enter the last name: ")
+                #value = input("Invalid input. The last name cannot be alphanumeric. Please re-enter the last name: ")
+                raise ValueError("Invalid entry Last Name")
+    def __str__(self) -> str:
+        return f"{self.first_name} {self.last_name}"
+
+
 class Employee(Person):
     """
-    A class representing employee data.
+    A class representing person data.
     Properties:
-        -first_name(str): The employee's first name
-        -last_name(str): The employee's last name
-        -review_date(str): The date of the employee review
-        -review_rating(int): The review employee rating (1-5)
+        -first_name(str): the person's first name
+        -last_name(str): the person's last name
     ChangeLog:
-        -RRoot, 1.1.2030: Created the class
-        -Sabrina Fechtner, 12.1.2023: Added Exceptions
+        -RRoot, 1.1.2030: Created class
+        -Sabrina Fechtner, 12.1.2023 added exception handling
     """
-    def __init__(self, employee_first_name: str, employee_last_name: str, review_date: str, review_rating: int) -> None:
+    def __init__(self, employee_first_name: str, employee_last_name: str, review_date: str = None,
+                 review_rating: int = None) -> None:
         super().__init__(first_name=employee_first_name, last_name=employee_last_name)
         self.review_date = review_date
         self.review_rating = review_rating
@@ -74,29 +78,39 @@ class Employee(Person):
 
     @review_date.setter
     def review_date(self, value: str):
-        try:
-            datetime.strptime(value, "%Y-%m-%d")
-            self._review_date = value
-        except ValueError:
-            raise ValueError("Please enter review date as YYYY-MM-DD")
+        while True:
+            try:
+                if datetime.strptime(value, "%Y-%m-%d"):
+                    self._review_date = value
+                    break
+            except ValueError:
+                #value = input("Invalid date format. Please enter a valid review date in the format YYYY-MM-DD: ")
+                raise ValueError("Invalid date format")
 
     @property
     def review_rating(self) -> int:
         return self._review_rating
 
     @review_rating.setter
-    def review_rating(self, value: int):
-        try:
-            value = int(value)
-            if value in {1, 2, 3, 4, 5}:
-                self._review_rating = value
-            else:
-                raise ValueError("Rating must be between 1 and 5.")
-        except ValueError as e:
-            print(f"Error setting rating: {e}")
+    def review_rating(self, value):
+        while True:
+            try:
+                input_value = int(value)
+                if input_value in {1, 2, 3, 4, 5}:
+                    self._review_rating = input_value
+                    break
+                else:
+                    raise ValueError("Rating must be between 1 and 5.")
+            except ValueError:
+                #value = input("Invalid input. Rating must be in between 1-5. Please re-enter the rating: ")
+                raise ValueError("Invalid review rating") from None
 
     def __str__(self) -> str:
         return f"{super().__str__()} has been reviewed on {self.review_date} with a rating of {self.review_rating}"
+
+    def __str__(self) -> str:
+        return f"{super().__str__()} has been reviewed on {self.review_date} with a rating of {self.review_rating}"
+
 
 class FileProcessor:
     """
@@ -105,6 +119,7 @@ class FileProcessor:
     RRoot,1.1.2030,Created Class
     Sabrina Fechtner 12.1.2023 Incorporated Class into A08
     """
+
     @staticmethod
     def read_data_from_file(file_name: str) -> List[Employee]:
         """ This function reads previous JSON file with employee data
@@ -175,6 +190,7 @@ class FileProcessor:
         except Exception as e:
             IO.output_error_messages("There was a non-specific error!", e)
         return employee_data
+
 
 if __name__ == "__main__":
     print("This class is not meant to be run!")
