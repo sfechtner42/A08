@@ -75,29 +75,24 @@ class Employee(Person):
             datetime.strptime(value, "%Y-%m-%d")
             self._review_date = value
         except ValueError:
-            raise ValueError("Please enter review date as YYYY-MM-DD")
+            raise ValueError("Please enter a valid review date in the format YYYY-MM-DD")
 
     @property
-    def review_rating(self, value: int):
-        try:
-            value = int(value)
-            if value in {1, 2, 3, 4, 5}:
-                self._review_rating = value
-            else:
-                raise ValueError("Rating must be between 1 and 5.")
-        except ValueError as e:
-            print(f"Error setting rating: {e}")
+    def review_rating(self) -> int:
+        return self._review_rating
 
     @review_rating.setter
     def review_rating(self, value: int):
-        try:
-            value = int(value)
-            if value in {1, 2, 3, 4, 5}:
-                self._review_rating = value
-            else:
-                raise ValueError("Rating must be between 1 and 5.")
-        except ValueError as e:
-            print(f"Error setting rating: {e}")
+        while True:
+            try:
+                value = int(value)
+                if value in {1, 2, 3, 4, 5}:
+                    self._review_rating = value
+                    break
+                else:
+                    value = input("Invalid input. Enter a rating between 1 and 5: ")
+            except ValueError:
+                value = input("Invalid input. Enter a valid integer rating between 1 and 5: ")
 
     def __str__(self) -> str:
         return f"{super().__str__()} has been reviewed on {self.review_date} with a rating of {self.review_rating}"
