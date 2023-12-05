@@ -79,6 +79,7 @@ class IO:
                     message = "{} {} is rated as 2 (Building)"
                 elif employee.review_rating == 1:
                     message = "{} {} is rated as 1 (Not Meeting Expectations)"
+
                 print(message.format(employee.first_name, employee.last_name))
             else:
                 raise ValueError("Rating must be between 1 and 5.")
@@ -93,19 +94,18 @@ class IO:
         :return: None
         """
         while True:
-            try:
-                # Get user input
-                employee_first_name: str = input("Please enter first name: ")
-                employee_last_name: str = input("Please enter last name: ")
-                review_date: str = input("Enter Review Date (YYYY-MM-DD): ")
-                review_rating: int = input("Enter Employee Rating (1-5): ")
+            # Get user input
+            employee_first_name: str = input("Please enter first name: ")
+            employee_last_name: str = input("Please enter last name: ")
+            review_date: str = input("Enter Review Date (YYYY-MM-DD): ")
+            review_rating: int = input("Enter Employee Rating (1-5): ")
 
-                # Create an instance of Employee with validated properties
+            try:
                 employee = Employee(employee_first_name, employee_last_name, review_date, review_rating)
                 employee_data.append(employee)
 
                 print(
-                    f"You recorded: {employee.first_name} {employee.last_name} has been reviewed on {review_date} with a rating of {review_rating}.")
+                    f"{employee.first_name} {employee.last_name} has been reviewed on {employee.review_date} with a rating of {employee.review_rating}.")
 
                 break  # If registration is successful
             except ValueError as e:

@@ -32,9 +32,12 @@ class Person:
 
     @first_name.setter
     def first_name(self, value):
-        if not str(value).isalpha():
-            raise ValueError("The first name cannot be alphanumeric. Please re-enter the first name.")
-        self._first_name = str(value)
+        while True:
+            if value.isalpha():
+                self._first_name = value
+                break
+            else:
+                value = input("Invalid input. The first name cannot be alphanumeric. Please re-enter the first name: ")
 
     @property
     def last_name(self) -> str:
@@ -42,12 +45,12 @@ class Person:
 
     @last_name.setter
     def last_name(self, value):
-        if not str(value).isalpha():
-            raise ValueError("The last name cannot be alphanumeric. Please re-enter the last name.")
-        self._last_name = str(value)
-
-    def __str__(self) -> str:
-        return f"{self.first_name} {self.last_name}"
+        while True:
+            if value.isalpha():
+                self._last_name = value
+                break
+            else:
+                value = input("Invalid input. The last name cannot be alphanumeric. Please re-enter the last name: ")
 class Employee(Person):
     """
     A class representing employee data.
@@ -78,15 +81,8 @@ class Employee(Person):
             raise ValueError("Please enter review date as YYYY-MM-DD")
 
     @property
-    def review_rating(self, value: int):
-        try:
-            value = int(value)
-            if value in {1, 2, 3, 4, 5}:
-                self._review_rating = value
-            else:
-                raise ValueError("Rating must be between 1 and 5.")
-        except ValueError as e:
-            print(f"Error setting rating: {e}")
+    def review_rating(self) -> int:
+        return self._review_rating
 
     @review_rating.setter
     def review_rating(self, value: int):
