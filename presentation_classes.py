@@ -22,8 +22,7 @@ class IO:
         """ This function displays error messages to the user
         ChangeLog: (Who, When, What)
         RRoot,1.3.2030,Created function
-        Sabrina Fechtner, 11.16.2023, Incorporated into A06
-        Sabrina Fechter, 11.24.2023, Pulled into A07
+        Sabrina Fechtner, 11.30.2023, Pulled  into A08
         :return: None
         """
         print(message, end="\n\n")
@@ -35,7 +34,7 @@ class IO:
         """ This function displays the menu of choices to the user
         ChangeLog: (Who, When, What)
         RRoot,1.3.2030,Created function
-        Sabrina Fechtner, 11.16.2023, Incorporated into A06
+        Sabrina Fechtner, 11.30.2023, Incorporated into A08
         :return: None
         """
         print(menu)
@@ -45,8 +44,7 @@ class IO:
         """ This function incorporates user choice from menu
         ChangeLog: (Who, When, What)
         RRoot,1.3.2030,Created function
-        Sabrina Fechtner, 11.16.2023, Incorporated into A06
-        Sabrina Fechtner, 11.25.2023 Pulled into A07
+        Sabrina Fechtner, 11.30.2023 Pulled into A08
         :return: User Choice
             """
         choice = "0"
@@ -63,7 +61,7 @@ class IO:
         """ This function shows the first name, last name, review date, and rating from the user
         ChangeLog: (Who, When, What)
         RRoot,1.3.2030,Created function
-        Sabrina Fechtner, 11.16.2023, Incorporated into A06
+        Sabrina Fechtner, 11.30.2023, Incorporated into A08
         :return: None
         """
         print("\nThe current data is:")
@@ -89,8 +87,7 @@ class IO:
         This function incorporates user choice from the menu
         ChangeLog: (Who, When, What)
         RRoot,1.3.2030,Created function
-        Sabrina Fechtner, 11.16.2023, Incorporated into A06
-        Sabrina Fechtner, 11.24.2023, pulled in A07
+        Sabrina Fechtner, 11.30.2023, Incorporated into A08
         :return: None
         """
         while True:

@@ -7,7 +7,7 @@
 # ------------------------------------------------------------------------------------------------- #
 
 import unittest
-from processing_classes import Person, Employee
+from data_classes import Person, Employee
 
 class TestPerson(unittest.TestCase):
     #works
@@ -15,7 +15,7 @@ class TestPerson(unittest.TestCase):
         person = Person('sabrina', 'fechtner')
         self.assertEqual("Sabrina", person.first_name)
         self.assertEqual('Fechtner', person.last_name)
-    #stalls unless you include the commented out section in processing_classes.py
+    #stalls unless you include the commented out section in data_classes.py
     def test_person_invalid_name(self):
         with self.assertRaises(ValueError):
             person = Person('123', 'Fechtner')
@@ -35,11 +35,11 @@ class TestEmployee(unittest.TestCase):
         self.assertEqual('Fechtner', employee.last_name)
         self.assertEqual('2000-01-01', employee.review_date)
         self.assertEqual(5, employee.review_rating)
-    #stalls unless you include the commented out section in processing_classes.py
+    #stalls unless you include the commented out section in data_classes.py
     def test_employee_review_date_type(self):
         with self.assertRaises(ValueError):
             employee = Employee("Sabrina", "Fechtner", "invalid_review_date", 5)
-    #stalls unless you include the commented out section in processing_classes.py
+    #stalls unless you include the commented out section in data_classes.py
     def test_employee_review_rating_type(self):
         with self.assertRaises(ValueError):
             employee = Employee("Sabrina", "Fechtner", "2000-01-01", 0)

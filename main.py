@@ -7,7 +7,7 @@
 # ------------------------------------------------------------------------------------------------- #
 
 from typing import List
-from processing_classes import Employee
+from data_classes import Employee
 import presentation_classes
 import processing_classes
 
